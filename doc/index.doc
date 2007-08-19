@@ -1,0 +1,61 @@
+/*! \mainpage PARFE: A Parallel Finite Element Solver
+
+\section ml_table Table of Contents
+
+- \ref overview
+- \ref configuration
+- \ref scripts
+- \ref example
+
+\section overview Overview
+
+\section configuration Configuration
+
+Example of configure script on an LINUX machine with INTEL compilers and MPI.
+\code
+CC=$HOME/bin/mpicc \
+CPP=$HOME/bin/mpic++ \
+CXX=$HOME/bin/mpic++ \
+FC=$HOME/bin/mpif77 \
+F77=$HOME/bin/mpif77 \
+./configure \
+  --with-cxxflags="-DLAM_BUILDING" \
+  --with-incdirs="-I$HOME/include -I$HOME/Trilinos/INTEL_MPI/include"\
+  --with-ldflags="-L$HOME/Trilinos/INTEL_MPI/lib -L$HOME/lib" \
+  --with-libs="-lhdf5 -lml -lifpack -laztecoo -lamesos -lepetraext -lepetra -lteuchos"
+\endcode
+
+Example of configure script on the Cray XT3.
+\code
+../configure \
+--prefix=/users/msala/parfe-build \
+CC=cc \
+CXX=CC \
+CPP="CC -E" \
+FC=ftn \
+--host=x86_64-unknown-linux-gnu \
+--enable-static \
+--with-trilinos=/users/msala/Trilinos/CRAY_XT3 \
+--with-parmetis=/apps/metis/parmetis-3.1 \
+--with-cxxflags="-DMPICH_IGNORE_CXX_SEEK"
+\endcode
+
+Example of configure script on a MAC OS X.
+\code
+./configure \
+  CXX=mpic++ \
+  FC=g95 \
+  --with-cxxflags="-DLAM_BUILDING" \
+  --with-incdirs="-I/Users/masala/include -I/Users/masala/Trilinos/G4_MPI/include"\
+  --with-ldflags="-L/sw/lib/ \
+    -L/Users/masala/lib \
+    -L/Users/masala/Trilinos/G4_MPI/lib \
+    -L/Users/masala/Repository/apps/g95/g95-install/lib/gcc-lib/powerpc-apple-darwin6.8/4.0.1/" \
+  --with-libs="-lml -lifpack -laztecoo -lanasazi -lamesos -lsuperludist-2.0 \
+  -L/Users/masala/lib -lepetraext -lepetra -lteuchos -lf95 -framework vecLib \
+  -lSystemStubs -lg2c"
+\endcode
+
+\section example Examples of usage
+
+*/

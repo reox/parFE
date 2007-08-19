@@ -1,0 +1,18 @@
+ParFE -- History of visible changes
+===================================
+
+This file reports (some of) the visible changes to ParFE.
+Please submit ParFE bugs using sourceforge tools, or write directly to the
+developers.
+
+*14-Nov-2006* Added a test directory to compare matrix-free and matrix-ready
+              preconditioners. A newer version of pfaim.cpp, names
+              new_pfaim.cpp, is a shorter and easier-to-understand driver
+              that can be used for further developments.
+
+*05-Nov-2006* Added a few missing files, and supported matrix-free and
+              matrix-ready preconditioners in pfaim.cpp.
+
+*25-Oct-2006* first public version of ParFE. Version 0.1 does not contain
+              any multigrid solver yet; the linear system matrix can be solved
+              using Jacobi preconditioners.
