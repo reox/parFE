@@ -28,7 +28,7 @@
 #include <Epetra_BlockMap.h>
 #include <Epetra_Export.h>
 
-//! A class to write the solution of an elasticity problem file of the institute of biotechnical engineering at the ETH zurich.
+//! A class to write the solution of an elasticity problem file of the Institute for Biomechanics at ETH Zurich.
 
 /*! The IBT_ProblemReader class is designed to write the solution, i.e. the displacements of an elasticity problem
     provided by the institute of biotechnical engineering at the ETH zurich.

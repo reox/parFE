@@ -29,7 +29,7 @@
 #include <string>
 #include "IntMap.h"
 
-//! A class to write an elasticity problem file of the institute of biotechnical engineering at the ETH zurich.
+//! A class to write an elasticity problem file of the Institute for Biomechanics at ETH Zurich.
 
 /*! The IBT_ProblemReader class is designed to write micro-CT scanner data, provided by the
     institute of biotechnical engineering at the ETH zurich.
