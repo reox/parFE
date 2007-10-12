@@ -27,8 +27,8 @@
 
 //! A class to write the solution of an elasticity problem file of the Institute for Biomechanics at ETH Zurich.
 
-/*! The IBT_ProblemReader class is designed to write the solution, i.e. the displacements of an elasticity problem
-    provided by the institute of biotechnical engineering at the ETH zurich.
+/*! The IBT_DispWriter class is designed to write the solution, i.e. the displacements of an elasticity problem
+    provided by the Institute for Biomechanics at ETH Zurich.
 
     \param Writer_T
     (In) Perform I/O through this type. Chose one of C_ASCII_GWriter, CPP_ASCII_GWriter or HDF5_GWriter.

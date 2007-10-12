@@ -33,7 +33,7 @@
 //! A class to read an elasticity problem file of the Institute for Biomechanics at ETH Zurich.
 
 /*! The IBT_ProblemReader class is designed to read micro-CT scanner data, provided by the
-    institute of biotechnical engineering at the ETH zurich.
+    Institute for Biomechanics at ETH Zurich.
     The data file contains the elasticity problem to be solved.
 
     \param Reader_T
