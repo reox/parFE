@@ -1,0 +1,16 @@
+Welcome to ParFE, a micro-FE solver for bone modeling!
+
+If you are reading this README file, you have already downloaded the ParFE
+distribution from sourceforge.net. We recall that ParFE's web page is:
+
+http://parfe.sourceforge.net
+
+This web page contains up-to-date documentation, configure scripts, and
+example of usage; just check
+
+http://parfe.sourceforge.net/install.php
+
+PLEASE LET US KNOW IF YOU ARE USING ParFE! This will help us to manage our
+resources, and to decide how to extend the project.
+
+Give a look to file parfe/LICENCE for licencing.
