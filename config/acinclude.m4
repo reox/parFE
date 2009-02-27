@@ -1006,7 +1006,7 @@ AC_REQUIRE([AC_F77_LIBRARY_LDFLAGS])
 acx_trilinos_ok=yes
 
 acx_trilinos_save_LIBS="$LIBS"
-TRILINOS_LIBS="-laztecoo -ltriutils -lteuchos -lepetraext -lepetra"
+TRILINOS_LIBS="-laztecoo -ltriutils -lepetraext -lepetra -lteuchos"
 EXTRA_LIBS="$PARMETIS_LIBS $SUPERLU_LIBS $LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS $LIBS"
 
 

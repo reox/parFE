@@ -24,6 +24,7 @@
 
 #include "parfe_ConfigDefs.h"
 
+#include <cstdlib> //GCC 4.3
 #include<iostream>
 #include<map>
 #include<fstream>
