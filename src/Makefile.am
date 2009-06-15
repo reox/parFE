@@ -27,6 +27,7 @@ CORE_H = \
 	$(srcdir)/ProblemReader.h \
 	$(srcdir)/ProblemWriter.h \
 	$(srcdir)/MatrixWriter.h  \
+	$(srcdir)/SolutionWriter.h  \
 	$(srcdir)/Tools.h
 
 CORE = \
