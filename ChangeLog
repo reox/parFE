@@ -5,6 +5,9 @@ This file reports (some of) the visible changes to ParFE.
 Please submit ParFE bugs using sourceforge tools, or write directly to the
 developers.
 
+*15-Jun-2009* Tar-file Package is updated to the svn version. ParFE Version 0.2
+              includes a multigrid preconditioners.
+
 *14-Nov-2006* Added a test directory to compare matrix-free and matrix-ready
               preconditioners. A newer version of pfaim.cpp, names
               new_pfaim.cpp, is a shorter and easier-to-understand driver
