@@ -1,4 +1,4 @@
-AC_INIT(parfe, 0.1, ETHZ)
+AC_INIT(parfe, 0.2, ETHZ)
 
 echo "--> Configuring PARFE code..."
 
