@@ -1,0 +1,4 @@
+1. go into the trilinos source directory, where also configure lies
+2. > patch --dry-run -p1 < trilinos-10.2.2.patch
+3. If the patch works
+   > patch -p1 < ../trilinos-10.2.2.patch 

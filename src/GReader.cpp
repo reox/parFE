@@ -19,6 +19,7 @@
  */
 
 #include "GReader.hpp"
+#include <cstring>
 
 
 //C functions

@@ -20,6 +20,7 @@
 
 #include "GWriter.hpp"
 #include <unistd.h> //fsync
+#include <cstring>
 
 
 //C functions

@@ -1050,7 +1050,7 @@ class Amesos;
 
 
 AC_MSG_CHECKING(wether ML was enabled in Trilinos)
-LIBS="-lml $TRILINOS_LIBS $EXTRA_LIBS"
+LIBS="-lml -lzoltan $TRILINOS_LIBS $EXTRA_LIBS"
 AC_TRY_LINK([
 namespace ML_Epetra {
 class MultiLevelPreconditioner;
@@ -1059,7 +1059,7 @@ class Epetra_RowMatrix;
 ], 
 [Epetra_RowMatrix *A; 
 ML_Epetra::MultiLevelPreconditioner Prec();],
-[AC_DEFINE(HAVE_MLLIB, [], [ml]) TRILINOS_LIBS="-lml $TRILINOS_LIBS"; echo "yes"], 
+[AC_DEFINE(HAVE_MLLIB, [], [ml]) TRILINOS_LIBS="-lml -lisorropia -lzoltan $TRILINOS_LIBS"; echo "yes"], 
 [echo "no"])
 
 LIBS="$acx_trilinos_save_LIBS"

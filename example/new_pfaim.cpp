@@ -116,6 +116,7 @@ int main( int argc, char* argv[] )
   string inputFileName = "../mesh/simple_test.mesh";
   string outputFileName = "./output";
   string precType = "ml";
+  string repartition = "parmetis";
   int maxIters = 1550;
   double tolerance = 1.e-5;
   bool verbose = true;
@@ -127,6 +128,9 @@ int main( int argc, char* argv[] )
   CLP.setOption("output", &outputFileName, "Base name of output file");
   CLP.setOption("precond", &precType, 
                 "Preconditioner to be used [Jacobi/ml/matrixfree]");
+  CLP.setOption("repart", &repartition, 
+                "Repartioner to be used [parmetis/rcb]");
+  
   CLP.setOption("maxiters", &maxIters, "Maximum CG iterations");
   CLP.setOption("tolerance", &tolerance, "Tolerance for CG");
   CLP.setOption("verbose", "silent", &verbose, 
@@ -190,8 +194,13 @@ int main( int argc, char* argv[] )
   INFO("Input Time: " << timer.WallTime() - temp_time);
   temp_time = timer.WallTime();
 
+  
+  if (repartition == "parmetis") 
   mesh->Redistribute(true, verbose);
-  if (fe_param.get<bool>("load balancing")) {
+  else if (repartition == "rcb")
+    mesh->RedistributeWIsorropia(true, verbose);
+
+  if (repartition == "parmetis" || repartition == "rcb") {
     INFO("Time used to partition mesh: " << timer.WallTime() - temp_time);
   } else {
     WARN("No load balancing used");
@@ -335,12 +344,16 @@ int main( int argc, char* argv[] )
     MLList.sublist("ML list").set("coarse: type", "Amesos-KLU");
     MLList.sublist("ML list").set("low memory usage", true);
     MLList.sublist("ML list").set("cycle applications", 10);
-
-    if (verbose)
-      MLList.set("output", 10);
-    else
-      MLList.set("output", 0);
     MLList.sublist("ML list").set("max levels", 10);
+    
+
+
+    if (verbose) {
+      MLList.sublist("ML list").set("output", 11);
+      MLList.set("output", 11);
+    } else {
+      MLList.set("output", 0);
+    }
 
     Epetra_MultiVector NullSpace(Copy, graph->Map(),
                                  &null_space[0], graph->Map().NumMyPoints(), 6);

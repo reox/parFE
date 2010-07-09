@@ -20,11 +20,27 @@
 
 #include "DistMesh.h"
 #include <Epetra_FECrsGraph.h>
+#include <Epetra_MultiVector.h>
 #include <Epetra_Import.h>
 #include "parmetis.h"
 #include <set>
 #include <map>
 //#include <pat_api.h>
+
+
+//Include Isorropia_Exception.hpp only because the helper functions at
+//the bottom of this file (which create the epetra objects) can
+//potentially throw exceptions.
+#include <Isorropia_Exception.hpp>
+
+//The Isorropia user-interface functions being demonstrated are declared
+//in Isorropia_Epetra.hpp.
+#include <Isorropia_Epetra.hpp>
+#include <Isorropia_EpetraCostDescriber.hpp>
+#include <Isorropia_EpetraRedistributor.hpp>
+#include <Isorropia_EpetraPartitioner.hpp>
+#include <Teuchos_ParameterList.hpp>
+//#include <EpetraExt_MultiVectorOut.h>
 
 //Macros to print trace information
 //#define CALL(mesg)\
@@ -331,6 +347,7 @@ int DistMesh::Redistribute(bool repart, bool debug)
   RET("DistMesh::ComputeElementEnvelopeOfNodes", ret);
   int res = RedistributeElements(num_myelements, my_elements);
   delete[] my_elements;
+    LoadBalStat(element_nodes->Map());
   return res;
 #else
   // Do it the element based way
@@ -733,4 +750,74 @@ void DistMesh::Scan(ProblemReader* pr) {
     }
 }
 
-  
+int DistMesh::RedistributeWIsorropia(bool repart, bool debug)
+{
+    int ret = 0;
+
+    if (repart) {
+
+        Epetra_BlockMap map1d(NumNodes, coordinates->Map().NumMyElements(), 1, 0, comm);
+        Epetra_MultiVector *coords = new Epetra_MultiVector(map1d, 3, false);
+
+        //convert Epetra_Vector to Epetra_MultiVector
+        for (int i=0; i<coordinates->Map().NumMyElements(); i++){
+            coords->operator()(0)->operator[](i) = coordinates->operator[](3*i);
+            coords->operator()(1)->operator[](i) = coordinates->operator[](3*i+1);
+            coords->operator()(2)->operator[](i) = coordinates->operator[](3*i+2);
+        }
+
+        Teuchos::ParameterList paramlist;
+        paramlist.set("Partitioning Method", "RCB");
+        Teuchos::ParameterList &sublist = paramlist.sublist("Zoltan");
+        sublist.set("RCB_RECTILINEAR_BLOCKS", "1");
+        sublist.set("DEBUG_LEVEL", "0");
+
+        Teuchos::RCP<const Epetra_MultiVector> coord = Teuchos::rcp(coords);
+        Teuchos::RCP<Isorropia::Epetra::Partitioner> part = Teuchos::rcp(new Isorropia::Epetra::Partitioner(coord, paramlist));
+        Isorropia::Epetra::Redistributor rd(part);
+        Teuchos::RCP<Epetra_MultiVector> new_coord = rd.redistribute(*coord);
+
+        ret = RedistributeNodes(new_coord->Map().NumMyElements(), new_coord->Map().MyGlobalElements());
+
+        //FIXME: actually we have all information we need in the MultiVector.
+        //is the following code replacing the RedistributeNodes stuff
+        //delete coordinates;
+        //coordinates = new Epetra_Vector(Copy, *new_coord, 0);
+
+        //delete coords;
+
+    }
+
+    //FIXME: evt use redistributor 
+    int* my_elements;
+    int num_myelements;
+    CALL("DistMesh::ComputeElementEnvelopeOfNodes");
+    ret = ComputeElementEnvelopeOfNodes(coordinates->Map(), num_myelements, my_elements);
+    RET("DistMesh::ComputeElementEnvelopeOfNodes", ret);
+    int res = RedistributeElements(num_myelements, my_elements);
+    delete[] my_elements;
+    LoadBalStat(element_nodes->Map());
+    return res;
+}
+        
+void DistMesh::LoadBalStat(Epetra_BlockMap map)
+{
+    //compute some statistic about load balancing
+    int localw = map.NumMyElements();
+    double globalw = map.NumGlobalElements() * 1.0/comm.NumProc();
+    double imbalance = 1.0;
+    if (localw >= globalw)
+        imbalance += (localw-globalw)/globalw;
+    else
+        imbalance += (globalw-localw)/globalw;
+
+    double max, min, avg;
+    comm.MaxAll(&imbalance, &max, 1);
+    comm.MinAll(&imbalance, &min, 1);
+    comm.SumAll(&imbalance, &avg, 1);
+
+    avg /= comm.NumProc();
+
+    if(comm.MyPID() == 0) cout << "min = " << min << ", max = " << max << ", avg = " << avg << endl;
+    
+}

@@ -137,6 +137,7 @@ class DistMesh {
     \return 0 on success.
   */
   int Redistribute(bool repart=true, bool debug=false);
+  int RedistributeWIsorropia(bool repart=true, bool debug=false);
 
   //! Redistributes the nodes according to user defined map.
 
@@ -222,6 +223,9 @@ class DistMesh {
   Epetra_Vector* coordinates;
   Epetra_MpiComm& comm;
   std::map<int,int> MaterialIDMap;
+  
+
+ void LoadBalStat(Epetra_BlockMap map);
   
 };
 

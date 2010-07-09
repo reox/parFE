@@ -116,7 +116,7 @@ static const char* help_message = "Usage: pfaim.exe [options] filename\n" \
 #define EXIT(exit_code) \
     MPI_Finalize(); \
     exit(exit_code);
-#elif
+#else
 #define EXIT(exit_code) exit(exit_code);
 #endif
 
