@@ -15,4 +15,3 @@ PARMETIS_DIR="/path/to/parmetis-3.1"
   --with-trilinos=$TRILINOS_DIR \
   --with-hdf5=$HDF5_DIR \
   --with-parmetis=$PARMETIS_DIR \
-  --with-cxxflags="-DH5_USE_16_API"

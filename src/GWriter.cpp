@@ -270,14 +270,14 @@ bool HDF5_GWriter::Open(const std::string& a_filename)
 bool HDF5_GWriter::Open()
 {
   //Suppress error messges.
-  H5Eset_auto( NULL, NULL );
+  H5Eset_auto( H5E_DEFAULT, NULL, NULL );
   file = H5Fcreate(filename.c_str(), H5F_ACC_EXCL, H5P_DEFAULT, plist);
   if (file < 0)
     file = H5Fopen(filename.c_str(), H5F_ACC_RDWR, plist);
   H5Pclose(plist);
-  group = H5Gopen(file, groupname.c_str());
+  group = H5Gopen(file, groupname.c_str(), H5P_DEFAULT);
   if (group < 0)
-    group = H5Gcreate(file, groupname.c_str(),0);
+    group = H5Gcreate(file, groupname.c_str(),H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   //independent I/O is the default
 #ifdef SEQUENTIAL_HDF5
   plist = H5P_DEFAULT;
@@ -352,9 +352,9 @@ int HDF5_GWriter::Write(const std::string& name, hid_t type, const void* data, i
       H5Sselect_none(memspace);
   }
 
-  hid_t dataset = H5Dopen(group, name.c_str());
+  hid_t dataset = H5Dopen(group, name.c_str(), H5P_DEFAULT);
   if (dataset < 0)
-    dataset = H5Dcreate(group, name.c_str(), type, dataspace, H5P_DEFAULT);
+    dataset = H5Dcreate(group, name.c_str(), type, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   offset[0] = my_offset;
   H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, offset, stride,  my_dims, NULL);
 
@@ -384,10 +384,10 @@ int HDF5_GWriter::Write(const std::string& name, hid_t type, const void* data)
     Open();
 #endif
     hid_t dataspace = H5Screate(H5S_SCALAR);
-    hid_t dataset = H5Dopen(group, name.c_str());
+    hid_t dataset = H5Dopen(group, name.c_str(), H5P_DEFAULT);
 	
     if (dataset < 0)
-      dataset = H5Dcreate(group, name.c_str(), type, dataspace, H5P_DEFAULT);
+      dataset = H5Dcreate(group, name.c_str(), type, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
       
     H5Dwrite( dataset, type, H5S_ALL, H5S_ALL, plist, data);
 
@@ -411,19 +411,19 @@ int HDF5_GWriter::Write(const std::string& name, const std::string& data)
 hid_t HDF5_GWriter::getNativeType(int, hsize_t i) {
   if (i == 1)
     return H5T_NATIVE_INT;
-  return H5Tarray_create(H5T_NATIVE_INT, 1, &i, NULL);
+  return H5Tarray_create(H5T_NATIVE_INT, 1, &i);
 }
 
 hid_t HDF5_GWriter::getNativeType(double, hsize_t i) {
   if (i == 1)
     return H5T_NATIVE_DOUBLE;
-  return H5Tarray_create(H5T_NATIVE_DOUBLE, 1, &i, NULL);
+  return H5Tarray_create(H5T_NATIVE_DOUBLE, 1, &i);
 }
 
 hid_t HDF5_GWriter::getNativeType(float, hsize_t i) {
   if (i==1)
     return H5T_NATIVE_FLOAT; 
-  return H5Tarray_create(H5T_NATIVE_FLOAT, 1, &i, NULL);
+  return H5Tarray_create(H5T_NATIVE_FLOAT, 1, &i);
 }
 
 hid_t HDF5_GWriter::getNativeType(const std::string&, hsize_t i) {
@@ -431,7 +431,7 @@ hid_t HDF5_GWriter::getNativeType(const std::string&, hsize_t i) {
   H5Tset_size(type, 256);
   if (i==1)
     return type; 
-  return H5Tarray_create(type, 1, &i, NULL);
+  return H5Tarray_create(type, 1, &i);
 }
 
 void HDF5_GWriter::copy(void* dest, const void* src, int nblocks, int block_size, int stride)

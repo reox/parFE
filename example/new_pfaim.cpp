@@ -429,6 +429,16 @@ int main( int argc, char* argv[] )
 
   temp_time = timer.WallTime();
 
+  if (inputFileName.find(".mesh.h5") == string::npos) {
+    int ext_pos =  inputFileName.rfind(".mesh");
+    inputFileName = inputFileName.substr(0, ext_pos)+".mesh.h5";
+    IBT_ProblemWriter<HDF5_GWriter> pw(inputFileName , comm);
+    fe_param.Print(&pw);
+    mesh->Print(&pw);
+    bcond->Print(&pw);
+    }
+
+
   if (inputFileName.find(".mesh.h5") != string::npos)
   {
     IBT_SolutionWriter<HDF5_GWriter> sw(inputFileName, comm);

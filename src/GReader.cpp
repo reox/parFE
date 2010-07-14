@@ -291,9 +291,9 @@ bool HDF5_GReader::Open()
   //H5Eset_auto( NULL, NULL );
   file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, plist);
   H5Pclose(plist);
-  group = H5Gopen(file, "/");
+  group = H5Gopen(file, "/", H5P_DEFAULT);
   plist = H5P_DEFAULT;
-  H5Eset_auto( NULL, NULL );
+  H5Eset_auto( H5E_DEFAULT, NULL, NULL );
   return (group >= 0);
 }
 
@@ -324,7 +324,7 @@ bool HDF5_GReader::Select(std::string s)
   hid_t temp;
   //Test group
   temp = group;
-  group = H5Gopen(temp, s.c_str());
+  group = H5Gopen(temp, s.c_str(), H5P_DEFAULT);
   if (group < 0) {
     return false;
   }
@@ -340,7 +340,7 @@ int HDF5_GReader::Read(const std::string& name, hid_t type, void* data, int num_
   my_dims[0] = num_my_elems;
   my_dims[1] = elem_size;
   
-  hid_t dataset = H5Dopen(group, name.c_str());
+  hid_t dataset = H5Dopen(group, name.c_str(), H5P_DEFAULT);
   if (dataset < 0)
     return -1;
   
@@ -366,7 +366,7 @@ int HDF5_GReader::Read(const std::string& name, hid_t type, void* data, int num_
 
 int HDF5_GReader::Read(const std::string& name, hid_t type, void* data)
 {
-  hid_t dataset = H5Dopen(group, name.c_str());
+  hid_t dataset = H5Dopen(group, name.c_str(), H5P_DEFAULT);
   if (dataset < 0)
     return -1;
   H5Dread(dataset, type, H5S_ALL, H5S_ALL, plist, data);
@@ -391,19 +391,19 @@ int HDF5_GReader::Read(const std::string& name, std::string& data)
 hid_t HDF5_GReader::getNativeType(int, hsize_t i) {
   if (i == 1)
     return H5T_NATIVE_INT;
-  return H5Tarray_create(H5T_NATIVE_INT, 1, &i, NULL);
+  return H5Tarray_create(H5T_NATIVE_INT, 1, &i);
 }
 
 hid_t HDF5_GReader::getNativeType(double, hsize_t i) {
   if (i == 1)
     return H5T_NATIVE_DOUBLE;
-  return H5Tarray_create(H5T_NATIVE_DOUBLE, 1, &i, NULL);
+  return H5Tarray_create(H5T_NATIVE_DOUBLE, 1, &i);
 }
 
 hid_t HDF5_GReader::getNativeType(float, hsize_t i) {
   if (i==1)
     return H5T_NATIVE_FLOAT; 
-  return H5Tarray_create(H5T_NATIVE_FLOAT, 1, &i, NULL);
+  return H5Tarray_create(H5T_NATIVE_FLOAT, 1, &i);
 }
 
 hid_t HDF5_GReader::getNativeType(const std::string&, hsize_t i) {
@@ -411,7 +411,7 @@ hid_t HDF5_GReader::getNativeType(const std::string&, hsize_t i) {
   H5Tset_size(type, 32);
   if (i==1)
     return type; 
-  return H5Tarray_create(type, 1, &i, NULL);
+  return H5Tarray_create(type, 1, &i);
 }
 
 void HDF5_GReader::copy(void* dest, const void* src, int nblocks, int block_size, int stride)
