@@ -1,0 +1,5 @@
+To convert hdf5 mesh file into the new format use following command:
+./convert_file.sh  file.mesh.h5
+
+It calls the python script that uses the package h5py.
+Please install h5py.

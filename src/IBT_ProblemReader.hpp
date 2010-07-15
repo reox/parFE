@@ -152,21 +152,21 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanParameters(Teuc
   
   freader.Select("/Parameters");
   freader.Skip('#');
-  freader.Read("element type", element);
+  freader.Read("element_type", element);
   freader.Skip('#');
-  freader.Read("#elements", nels);
+  freader.Read("nr_elements", nels);
   freader.Skip('#');
-  freader.Read("#nodes", nn);
+  freader.Read("nr_nodes", nn);
   freader.Skip('#');
-  freader.Read("#integration points", nip);
+  freader.Read("nr_integration_points", nip);
   freader.Skip('#');
-  freader.Read("#dofs per node", nodof);
+  freader.Read("nr_dofs_per_node", nodof);
   freader.Skip('#');
-  freader.Read("#nodes per element", nod);
+  freader.Read("nr_nodes_per_element", nod);
   freader.Skip('#');
-  freader.Read("size of stress-strain matrix", nst);
+  freader.Read("size_of_stress_strain_matrix", nst);
   freader.Skip('#');
-  freader.Read("#dimensions", ndim);
+  freader.Read("nr_dimensions", ndim);
   freader.Skip('#');
   element = element.substr(1, element.length()-2);
   freader.Skip('#');
@@ -175,8 +175,8 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanParameters(Teuc
   freader.Read("cc", cc);
 
   freader.Skip('#');
-  freader.Read("#material properties", nprops);
-  freader.Read("#material types", ntypes);
+  freader.Read("nr_material_properties", nprops);
+  freader.Read("nr_material_types", ntypes);
   freader.Skip('#');  
   
   Epetra_SerialDenseMatrix MaterialProps(nprops, ntypes);
@@ -193,7 +193,7 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanParameters(Teuc
 
   freader.Skip('#');
   freader.Read("tolerance", tol);
-  freader.Read("iteration limit", limit);
+  freader.Read("iteration_limit", limit);
 
   ndof = nod*nodof;
 
@@ -270,15 +270,15 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanFixedNodes(Epet
   std::set<int> node_set;
   std::vector<int> node_vec;
   freader.Skip('#');
-  freader.Select("/Boundary conditions");
-  freader.Read("Fixed nodes size", num_fn);
+  freader.Select("/Boundary_conditions");
+  freader.Read("fixed_nodes_size", num_fn);
   int* nodes = new int[num_fn];
   int* senses = new int[num_fn];
   double* values = new double[num_fn];
 
   Epetra_Map dummy_map(num_fn, 0, comm);
   int my_len = dummy_map.NumMyElements();
-  freader.Read("Fixed nodes", "Node number", nodes, "Sense", senses, "Value", values, num_fn, my_len, 1, 1, 1, dummy_map.MinMyGID());
+  freader.Read("fixed_nodes", "Node_number", nodes, "Sense", senses, "Value", values, num_fn, my_len, 1, 1, 1, dummy_map.MinMyGID());
   for (int i=0; i<my_len; ++i) {
     --nodes[i];
     --senses[i];
@@ -309,14 +309,14 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanRestrainedNodes
   int num_rn;
   std::vector<int> node_vec;
   freader.Skip('#');
-  freader.Select("/Boundary conditions");
-  freader.Read("Restrained nodes size", num_rn);
+  freader.Select("/Boundary_conditions");
+  freader.Read("restrained_nodes_size", num_rn);
   int* nodes = new int[num_rn];
   int* freedoms = new int[num_rn*num_nodal_dofs];
 
   Epetra_Map dummy_map(num_rn, 0, comm);
   int my_len = dummy_map.NumMyElements();
-  freader.Read("Restrained nodes", "Node number", nodes, "Nodal freedom", freedoms, num_rn, my_len, 1, num_nodal_dofs, dummy_map.MinMyGID());
+  freader.Read("restrained_nodes", "Node_number", nodes, "Nodal_freedom", freedoms, num_rn, my_len, 1, num_nodal_dofs, dummy_map.MinMyGID());
   for (int i=0; i<my_len; ++i) {
     --nodes[i];
   }
@@ -337,14 +337,14 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanLoadedNodes(Epe
   int num_ln;
   std::vector<int> node_vec;
   freader.Skip('#');
-  freader.Select("/Boundary conditions");
-  freader.Read("Loaded nodes size", num_ln);
+  freader.Select("/Boundary_conditions");
+  freader.Read("loaded_nodes_size", num_ln);
   int* nodes = new int[num_ln];
   double* loads = new double[num_ln*num_nodal_dofs];
 
   Epetra_Map dummy_map(num_ln, 0, comm);
   int my_len = dummy_map.NumMyElements();
-  freader.Read("Loaded nodes", "Node number", nodes, "Loads", loads, num_ln, my_len, 1, 3, dummy_map.MinMyGID());
+  freader.Read("loaded_nodes", "Node_number", nodes, "Loads", loads, num_ln, my_len, 1, 3, dummy_map.MinMyGID());
   for (int i=0; i<my_len; ++i) {
     --nodes[i];
   }

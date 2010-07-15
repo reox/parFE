@@ -1,0 +1,6 @@
+./createxmf.py:
+Generate the xmf file that is needed by Paraview to visualize the mesh
+usage: ./createxmf.py filename
+
+./createxmfold.py:
+This script is used for the old file format

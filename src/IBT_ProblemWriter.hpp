@@ -135,14 +135,14 @@ template<typename Writer_T> IBT_ProblemWriter<Writer_T>::IBT_ProblemWriter(const
 template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintParameters(Teuchos::ParameterList param)
 {
   fwriter.Select("/Parameters");
-  fwriter.Write("element type", "'"+param.get("element type","")+"'");
-  fwriter.Write("#elements", param.get("#elements",0));
-  fwriter.Write("#nodes", param.get("#nodes",0));
-  fwriter.Write("#integration points", param.get("#integration points",0));
-  fwriter.Write("#dofs per node",param.get("#dofs per node",0));
-  fwriter.Write("#nodes per element", param.get("#nodes per element",0));
-  fwriter.Write("size of stress-strain matrix", param.get("size of stress-strain matrix",0));
-  fwriter.Write("#dimensions", param.get("#dimensions",0));
+  fwriter.Write("element_type", "'"+param.get("element type","")+"'");
+  fwriter.Write("nr_elements", param.get("#elements",0));
+  fwriter.Write("nr_nodes", param.get("#nodes",0));
+  fwriter.Write("nr_integration_points", param.get("#integration points",0));
+  fwriter.Write("nr_dofs_per_node",param.get("#dofs per node",0));
+  fwriter.Write("nr_nodes_per_element", param.get("#nodes per element",0));
+  fwriter.Write("size_of_stress_strain_matrix", param.get("size of stress-strain matrix",0));
+  fwriter.Write("nr_dimensions", param.get("#dimensions",0));
 
   fwriter.Write("aa", param.get("aa",0.0));
   fwriter.Write("bb", param.get("bb",0.0));
@@ -150,8 +150,8 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintParameters(Teu
 
   int nprops = param.get("#material properties",0);
   int ntypes = param.get("#material types",0);
-  fwriter.Write("#material properties", nprops);
-  fwriter.Write("#material types", ntypes);
+  fwriter.Write("nr_material_properties", nprops);
+  fwriter.Write("nr_material_types", ntypes);
   
   //fwriter.Write("Young's modulus", param.get("Young's modulus",0.0));
   //fwriter.Write("Poisson's ratio", param.get("Poisson's ratio",0.0));
@@ -168,7 +168,7 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintParameters(Teu
   else
     fwriter.Write("materials", material_props.A(), ntypes, ntypes, nprops, 0);
   fwriter.Write("tolerance", param.get("tolerance",0.0));
-  fwriter.Write("iteration limit", param.get("iteration limit",0));
+  fwriter.Write("iteration_limit", param.get("iteration limit",0));
 
   return 0;
 }
@@ -223,13 +223,13 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintMaterialIDs(co
   Epetra_IntVector linear_vec(linear_map);
   linear_vec.Export(matids, linear_exporter, Insert);
 
-  return fwriter.Write("Material IDs", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID());
+  return fwriter.Write("material_ids", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID());
 }
 
 template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintFixedNodes(const Epetra_Vector& fixed_nodes)
 {
   //Print fixed nodes
-  fwriter.Select("/Boundary conditions");  
+  fwriter.Select("/Boundary_conditions");  
   const Epetra_BlockMap& fixedmap = fixed_nodes.Map();
   
   //build a linear map
@@ -261,8 +261,8 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintFixedNodes(con
   comm.SumAll(&my_size, &global_size, 1);
   comm.ScanSum(&my_size, &my_offset, 1);
   my_offset -= my_size;
-  fwriter.Write("Fixed nodes size", global_size);
-  return fwriter.Write("Fixed nodes", "Node number", &fn_vec[0], "Sense", &fsns_vec[0], "Value", &fval_vec[0], global_size, my_size, 1,1,1, my_offset);
+  fwriter.Write("fixed_nodes_size", global_size);
+  return fwriter.Write("fixed_nodes", "Node_number", &fn_vec[0], "Sense", &fsns_vec[0], "Value", &fval_vec[0], global_size, my_size, 1,1,1, my_offset);
 }
 
 
@@ -270,7 +270,7 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintRestrainedNode
 {
 
   //Print restrained nodes
-  fwriter.Select("/Boundary conditions");  
+  fwriter.Select("/Boundary_conditions");  
   const Epetra_BlockMap& restrainedmap = restrained_nodes.Map();  
   //build a linear map
 
@@ -306,16 +306,16 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintRestrainedNode
   comm.SumAll(&my_size, &global_size, 1);
   comm.ScanSum(&my_size, &my_offset, 1);
   my_offset -= my_size;
-  fwriter.Write("Restrained nodes size", global_size);
+  fwriter.Write("restrained_nodes_size", global_size);
   //write into compound data type
-  return fwriter.Write("Restrained nodes", "Node number", &rn_vec[0], "Nodal freedom", &rval_vec[0], global_size, my_size, 1, element_size, my_offset);
+  return fwriter.Write("restrained_nodes", "Node_number", &rn_vec[0], "Nodal_freedom", &rval_vec[0], global_size, my_size, 1, element_size, my_offset);
 }
 
 
 template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintLoadedNodes(const Epetra_Vector& loaded_nodes)
 {
   //Print restrained nodes
-  fwriter.Select("/Boundary conditions");  
+  fwriter.Select("/Boundary_conditions");  
   const Epetra_BlockMap& loadmap = loaded_nodes.Map();  
   //build a linear map
   Epetra_BlockMap linear_map(loadmap.MaxAllGID()+1, loadmap.ElementSize(), 0, comm);
@@ -351,9 +351,9 @@ template<typename Writer_T> int IBT_ProblemWriter<Writer_T>::PrintLoadedNodes(co
   comm.SumAll(&my_size, &global_size, 1);
   comm.ScanSum(&my_size, &my_offset, 1);
   my_offset -= my_size;
-  fwriter.Write("Loaded nodes size", global_size);
+  fwriter.Write("loaded_nodes_size", global_size);
   //write into compound data type
-  return fwriter.Write("Loaded nodes", "Node number", &ln_vec[0], "Loads", &lval_vec[0], global_size, my_size, 1, element_size, my_offset);
+  return fwriter.Write("loaded_nodes", "Node_number", &ln_vec[0], "Loads", &lval_vec[0], global_size, my_size, 1, element_size, my_offset);
 }
 
 //TODO: Node and element sets

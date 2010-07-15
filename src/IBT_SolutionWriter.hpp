@@ -215,7 +215,7 @@ template<> int IBT_SolutionWriter<HDF5_GWriter>::PrintDisplacements(const Epetra
   Epetra_Vector linear_vec(linear_map);
   linear_vec.Export(vec, linear_exporter, Insert);
 
-  fwriter.Write("Nodal displacements", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID());
+  fwriter.Write("nodal_displacements", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID());
 
   return 0;
 }
@@ -234,7 +234,7 @@ template<> int IBT_SolutionWriter<HDF5_GWriter>::PrintForces(const Epetra_Vector
   Epetra_Vector linear_vec(linear_map);
   linear_vec.Export(vec, linear_exporter, Insert);
 
-  fwriter.Write("Nodal forces", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID());
+  fwriter.Write("nodal_forces", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID());
 
   return 0;
 }
@@ -243,7 +243,7 @@ template<> int IBT_SolutionWriter<HDF5_GWriter>::PrintStrains(const Epetra_Multi
   
   fwriter.Select("/Solution");
   int num_gausspts = vec.NumVectors();
-  fwriter.Write("#Gauss points", num_gausspts);
+  fwriter.Write("nr_gauss_points", num_gausspts);
 
   int num_strains = vec.Map().ElementSize();
   int num_elements = vec.Map().MaxAllGID()+1;
@@ -257,7 +257,7 @@ template<> int IBT_SolutionWriter<HDF5_GWriter>::PrintStrains(const Epetra_Multi
 
   for (int i=0; i<num_gausspts; ++i) {
 
-      fwriter.Write("Element strain", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID()+linear_map.NumGlobalElements()*i);
+      fwriter.Write("element_strain", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID()+linear_map.NumGlobalElements()*i);
   }
 
   return 0;
@@ -268,7 +268,7 @@ template<> int IBT_SolutionWriter<HDF5_GWriter>::PrintStresses(const Epetra_Mult
 
     fwriter.Select("/Solution");
     int num_gausspts = vec.NumVectors();
-    fwriter.Write("#Gauss points", num_gausspts);
+    fwriter.Write("nr_gauss_points", num_gausspts);
     int num_stresses = vec.Map().ElementSize();
     int num_elements = vec.Map().MaxAllGID()+1;
     
@@ -281,7 +281,7 @@ template<> int IBT_SolutionWriter<HDF5_GWriter>::PrintStresses(const Epetra_Mult
     
     for (int i=0; i<num_gausspts; ++i) {
 	
-	fwriter.Write("Element stress", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID()+linear_map.NumGlobalElements()*i);
+	fwriter.Write("element_stress", linear_vec.Values(), linear_map.NumGlobalElements(), linear_map.NumMyElements(), linear_map.ElementSize(), linear_map.MinMyGID()+linear_map.NumGlobalElements()*i);
     }
     
     return 0;
