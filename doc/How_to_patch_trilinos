@@ -1,3 +1,4 @@
+This patch was necessary for version 10.2
 1. go into the trilinos source directory, where also configure lies
 2. > patch --dry-run -p1 < trilinos-10.2.2.patch
 3. If the patch works

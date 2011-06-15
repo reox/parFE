@@ -199,6 +199,8 @@ int main( int argc, char* argv[] )
   mesh->Redistribute(true, verbose);
   else if (repartition == "rcb")
     mesh->RedistributeWIsorropia(true, verbose);
+  else
+	mesh->Redistribute(false, verbose);
 
   if (repartition == "parmetis" || repartition == "rcb") {
     INFO("Time used to partition mesh: " << timer.WallTime() - temp_time);
@@ -349,10 +351,10 @@ int main( int argc, char* argv[] )
 
 
     if (verbose) {
-      MLList.sublist("ML list").set("output", 11);
-      MLList.set("output", 11);
+      MLList.sublist("ML list").set("ML output", 10);
+      MLList.set("ML output", 10);
     } else {
-      MLList.set("output", 0);
+      MLList.set("ML output", 0);
     }
 
     Epetra_MultiVector NullSpace(Copy, graph->Map(),
@@ -391,12 +393,13 @@ int main( int argc, char* argv[] )
     MLList.set("null space: dimension", 6);
     MLList.set("null space: type", "pre-computed");
     MLList.set("null space: vectors", &null_space[0]);
-    MLList.set("aggregation: type (level 0)", "METIS");
-    MLList.set("aggregation: type (level 1)", "Uncoupled");
-    MLList.set("aggregation: type (level 2)", "MIS");
+    MLList.set("aggregation: type", "MIS");
+	//MLList.set("aggregation: type (level 0)", "METIS");
+    //MLList.set("aggregation: type (level 1)", "Uncoupled");
+    //MLList.set("aggregation: type (level 2)", "MIS");
     MLList.set("low memory usage", true);
-    if (verbose) MLList.set("output", 10);
-    else         MLList.set("output", 0);
+    if (verbose) MLList.set("ML output", 10);
+    else         MLList.set("ML output", 0);
 
     Prec = rcp(new MultiLevelPreconditioner(*ep->GetMatrix(), MLList, true));
     solver.SetPrecOperator(Prec.get());

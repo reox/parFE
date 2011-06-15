@@ -1,4 +1,6 @@
 #!/bin/bash
 ./configure \
   --with-mpi-compilers \
-  --with-trilinos=/home/cflaig/builds/trilinos-10.2.2/ \
+  --with-trilinos=$HOME/builds/trilinos-10.6.4/ \
+  --with-cxxflags="-g -march=core2 -O3" \
+  --with-cflags="-g -march=core2 -O3"

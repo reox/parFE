@@ -13,4 +13,4 @@ then
 fi
 
 ./convert_to_newformat.py $1
-sed -e 's/Node number/Node_number/' -e 's/Nodal freedom/Nodal_freedom/' -i $1 
+sed -e 's/Node number/Node_number/g' -e 's/Nodal freedom/Nodal_freedom/g' -i $1 
