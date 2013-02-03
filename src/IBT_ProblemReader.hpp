@@ -260,7 +260,7 @@ template<typename Reader_T> int IBT_ProblemReader<Reader_T>::ScanMaterialIDs(Epe
   const Epetra_BlockMap& matidmap = matids.Map();
   if (!matidmap.LinearMap())
     return -1;
-  return freader.Read("Material IDs", matids.Values(), matidmap.NumGlobalElements(), matidmap.NumMyElements(), matidmap.ElementSize(), matidmap.MinMyGID());
+  return freader.Read("material_ids", matids.Values(), matidmap.NumGlobalElements(), matidmap.NumMyElements(), matidmap.ElementSize(), matidmap.MinMyGID());
 }
 
 
